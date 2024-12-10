@@ -1,0 +1,668 @@
+@charset "UTF-8";
+/*notest to self: 
+1. jak ci nie generuje któregoś z borderów to 
+zmień zmienną z --postcard-width na --postcard-base-width
+bo z jakiegoś powodu może wywalać
+*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  background: rgb(59, 34, 59);
+  background: linear-gradient(170deg, rgb(82, 95, 138) 0%, rgb(27, 28, 43) 80%);
+  --postcard-color: rgb(110, 132, 243);
+  --postcard-shadow: rgb(85, 100, 173) ;
+  --postcard-flap: rgb(141, 158, 245);
+  --postcard-base-width: 550px;
+  --popup-gallery-color: rgba(116, 197, 254, 0.5);
+  min-width: calc(1.3 * var(--postcard-base-width));
+}
+
+main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.whole-mail-card {
+  margin-top: 300px;
+  animation: idleAnimation 5s ease-in-out infinite;
+}
+
+.mailcard {
+  --postcard-width: var(--postcard-base-width);
+  background-color: var(--postcard-color);
+  width: var(--postcard-width);
+  aspect-ratio: 250/176;
+  position: relative;
+  z-index: 9;
+}
+
+.whole-mail-card :hover .mail-flap-2 {
+  visibility: visible;
+}
+
+.mail-flap {
+  z-index: 10;
+  position: absolute;
+  border-top: calc(0.33 * var(--postcard-width)) solid var(--postcard-flap);
+  border-left: calc(0.5 * var(--postcard-width)) solid transparent;
+  border-right: calc(0.5 * var(--postcard-width)) solid transparent;
+}
+
+.mail-flap-2 {
+  z-index: 8;
+  position: absolute;
+  top: 5px;
+  visibility: hidden;
+  border-top: calc(0.33 * var(--postcard-width)) solid rgba(0, 0, 0, 0.3);
+  border-left: calc(0.5 * var(--postcard-width)) solid transparent;
+  border-right: calc(0.5 * var(--postcard-width)) solid transparent;
+}
+
+.mail-flap-open {
+  height: 0;
+  width: 0;
+  border-bottom: calc(0.4 * var(--postcard-base-width)) solid var(--postcard-color);
+  border-left: calc(0.5 * var(--postcard-base-width)) solid transparent;
+  border-right: calc(0.5 * var(--postcard-base-width)) solid transparent;
+  display: none;
+  justify-content: left;
+}
+.mail-flap-open .flap-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(0.4 * var(--postcard-base-width));
+}
+.mail-flap-open .flap-text .text {
+  font-size: 2rem;
+  position: absolute;
+  text-transform: capitalize;
+  font-family: "Permanent Marker", cursive;
+  background-color: var(--postcard-shadow);
+}
+.mail-flap-open .flap-text:hover {
+  cursor: pointer;
+}
+
+.content {
+  z-index: 15;
+  height: 100%;
+}
+.content .label {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.content .label .label-text {
+  z-index: 11;
+  font-size: 2rem;
+  position: absolute;
+  top: 50px;
+}
+.content .label .label-text:hover {
+  cursor: pointer;
+}
+.content .label .sticker {
+  position: absolute;
+  left: 35px;
+  bottom: 35px;
+  width: 120px;
+  aspect-ratio: 400/424;
+  background: url("res/kittens.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.content .label .address {
+  position: absolute;
+  right: 35px;
+  bottom: 35px;
+  font-size: 2rem;
+  text-transform: capitalize;
+  background-color: var(--postcard-flap);
+  padding: 10px;
+  max-width: 650px;
+  border: 5px dashed rgb(60, 82, 179);
+  box-shadow: 0 0 0 2.5px, 1 12.5px #c569de, inset 2.5px #222f67, 0 5px 10px 15px rgba(0, 0, 0, 0.5), inset 0 0 0 6px #c569de, inset 0 0 100vw 100vw rgb(231, 220, 245);
+  text-align: center;
+}
+.content .label .address #from::before {
+  content: "from: ";
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.content .label .address #to::before {
+  content: "to: ";
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.content .label .address * {
+  display: flex;
+  justify-content: space-between;
+}
+
+.shadow-under-mailcard {
+  width: var(--postcard-base-width);
+  height: 50px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.3) 20%, rgba(0, 212, 255, 0) 100%);
+  margin: 100px 0;
+  border-radius: 100%;
+  animation: idleShadowAnimation 5s ease-in-out infinite;
+}
+
+.envelope-content {
+  width: 100%;
+  height: calc(0.3 * 0.71 * var(--postcard-base-width));
+  display: flex;
+  justify-content: center;
+}
+
+.clickable-area {
+  width: 40%;
+}
+
+.clickable-area :hover {
+  cursor: grab;
+}
+
+.letter {
+  display: block;
+  position: absolute;
+  z-index: 9;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 36px;
+  left: calc(0.1 * var(--postcard-base-width));
+  border-top: calc(0.26 * var(--postcard-base-width)) solid rgb(211, 248, 255);
+  border-left: calc(0.4 * var(--postcard-base-width)) solid transparent;
+  border-right: calc(0.4 * var(--postcard-base-width)) solid transparent;
+}
+
+@keyframes idleAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(25px); /* Adjust the distance as needed */
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes idleShadowAnimation {
+  0% {
+    width: calc(0.75 * var(--postcard-base-width));
+    height: 25px;
+  }
+  50% {
+    width: var(--postcard-base-width);
+    height: 50px;
+  }
+  100% {
+    width: calc(0.75 * var(--postcard-base-width));
+    height: 25px;
+  }
+}
+.topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+.actual-gift {
+  display: none;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.568);
+  min-width: 550px;
+  width: 80vw;
+  height: 80vh;
+  z-index: 99;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-radius: 20px;
+  min-width: calc(1.3 * var(--postcard-base-width));
+}
+.actual-gift .topbar {
+  line-height: 4vh;
+  font-size: 1.5rem;
+}
+.actual-gift .title {
+  margin: 0 20px;
+}
+
+.close {
+  overflow: hidden;
+  position: relative;
+  border: none;
+  padding: 0;
+  aspect-ratio: 1/1;
+  height: 4vh;
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+  font: inherit;
+  text-indent: 100%;
+  cursor: pointer;
+}
+.close:before, .close:after {
+  position: absolute;
+  top: 15%;
+  left: calc(50% - 0.0625em);
+  width: 0.125em;
+  height: 70%;
+  border-radius: 0.125em;
+  transform: rotate(45deg);
+  background: currentcolor;
+  content: "";
+}
+.close:after {
+  transform: rotate(-45deg);
+}
+
+.popup-content {
+  width: 100%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+}
+.popup-content .row-1 {
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-content .row-1 .wrapper {
+  display: flex;
+  justify-content: center;
+  width: 75%;
+  height: 100%;
+}
+.popup-content .row-1 .wrapper .item {
+  aspect-ratio: 8.5/11;
+  height: 85%;
+  cursor: pointer;
+}
+.popup-content .row-1 .wrapper .item .img-wrap {
+  width: 100%;
+  height: 100%;
+}
+.popup-content .row-1 .wrapper .item .img-wrap .click-me-text {
+  position: relative;
+  top: 55%;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+}
+.popup-content .row-1 .wrapper .item .img-wrap .click-me-text p {
+  background-color: black;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0 20px;
+}
+.popup-content .row-1 .wrapper .item .img-wrap img {
+  width: 100%;
+  height: 100%;
+}
+.popup-content .row-1 .wrapper .item .img-wrap .eximg {
+  filter: brightness(0.8) blur(10px);
+}
+.popup-content .row-1 .wrapper .item .img-wrap .eximg:hover {
+  filter: none;
+}
+.popup-content .row-1 .wrapper .item .img-wrap:hover .click-me-text {
+  visibility: hidden;
+}
+.popup-content .row-2 {
+  width: 100%;
+  height: 30%;
+  display: flex;
+  justify-content: space-evenly;
+}
+.popup-content .row-2 .item {
+  aspect-ratio: 8.5/5.5;
+  height: 80%;
+  background-color: rgb(39, 36, 245);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.popup-content .row-2 .item .item-title {
+  font-family: "Pacifico", cursive;
+  font-size: 2rem;
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.popup-content .row-2 .item .item-title .letter-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.popup-content .row-2 .item .item-title .click-me-text {
+  position: absolute;
+  aspect-ratio: 8.5/5.5;
+  height: 23%;
+  z-index: 999;
+  text-align: center;
+  -webkit-backdrop-filter: brightness(0.8) blur(10px);
+          backdrop-filter: brightness(0.8) blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-content .row-2 .item .item-title .click-me-text p {
+  background-color: black;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0 20px;
+}
+.popup-content .row-2 .item .item-title:hover .click-me-text {
+  visibility: hidden;
+}
+.popup-content .row-2 .item .heart-wrapper {
+  padding: 0 30%;
+}
+
+.heart {
+  --heart-color:rgb(255, 255, 255);
+  background-color: var(--heart-color);
+  display: inline-block;
+  height: 30px;
+  margin: 0 10px;
+  position: relative;
+  top: 0;
+  transform: rotate(-45deg);
+  width: 30px;
+}
+
+.heart:before,
+.heart:after {
+  content: "";
+  background-color: var(--heart-color);
+  border-radius: 50%;
+  height: 30px;
+  position: absolute;
+  width: 30px;
+}
+
+.heart:before {
+  top: -15px;
+  left: 0;
+}
+
+.heart:after {
+  left: 15px;
+  top: 0;
+}
+
+#ltr1 {
+  display: none;
+  position: fixed;
+  background: url("res/bg.jpg");
+  filter: invert(100%);
+  color: black;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 90vh;
+  aspect-ratio: 8.5/11;
+  z-index: 129;
+}
+#ltr1 * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+#ltr1 .topbar {
+  line-height: 4.5vh;
+  font-size: 1.5rem;
+  justify-content: right;
+}
+#ltr1 .close {
+  height: 4.5vh;
+}
+#ltr1 .content {
+  height: 95%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#ltr1 .content .wrapper {
+  height: 80%;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#ltr1 .content .wrapper .horizontal-wrapper {
+  width: 80%;
+  height: 100%;
+}
+#ltr1 .content .wrapper .horizontal-wrapper .title {
+  width: 95%;
+  color: black;
+  text-align: center;
+  font-size: 1.8rem;
+  line-height: 36px;
+  padding-bottom: 10px;
+}
+#ltr1 .content .wrapper .horizontal-wrapper .title::after {
+  content: "<3";
+}
+#ltr1 .content .wrapper .horizontal-wrapper .text {
+  font-size: 1.5rem;
+  line-height: 36px;
+}
+#ltr1 .content .wrapper .horizontal-wrapper .row {
+  height: 20%;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+}
+#ltr1 .content .wrapper .horizontal-wrapper .row .signature {
+  font-size: 2rem;
+}
+
+#ltr2 {
+  display: none;
+  position: fixed;
+  background-color: var(--popup-gallery-color);
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  height: 90vh;
+  aspect-ratio: 8.5/11;
+  z-index: 129;
+}
+#ltr2 * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+#ltr2 .topbar {
+  line-height: 4.5vh;
+  font-size: 1.5rem;
+}
+#ltr2 .title {
+  width: 95%;
+  text-align: center;
+}
+#ltr2 .close {
+  height: 4.5vh;
+}
+#ltr2 .content {
+  height: 95%;
+}
+#ltr2 .content .photo-gallery {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+#ltr2 .content .photo-gallery .gal-row {
+  width: 80%;
+  height: 25%;
+  display: flex;
+  justify-content: space-around;
+}
+#ltr2 .content .photo-gallery .gal-row .item {
+  width: 30%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+#ltr2 .content .photo-gallery .gal-row .item .wrapper {
+  height: 90%;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}
+#ltr2 .content .photo-gallery .gal-row .item .wrapper .pic {
+  border-radius: 5px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+#ltr2 .content .photo-gallery .gal-row .item p {
+  height: 10%;
+  text-align: center;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.valentine-popup {
+  --valentine-bg: rgba(64, 76, 133, 0.607);
+  background: url("./res/serduszka.jpg");
+  background-repeat: no-repeat;
+  color: rgb(255, 255, 255);
+  background-size: cover;
+  display: none;
+  position: fixed;
+  height: 60vh;
+  aspect-ratio: 8.5/5.5;
+  z-index: 129;
+}
+.valentine-popup * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.valentine-popup .topbar {
+  line-height: 6.948vh;
+  display: flex;
+  justify-content: right;
+  width: 100%;
+  background-color: var(--valentine-bg);
+}
+.valentine-popup .close {
+  height: 6vh;
+  color: black;
+}
+.valentine-popup .content {
+  width: 100%;
+  height: 90%;
+  background-color: var(--valentine-bg);
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+.valentine-popup .content .row-1 {
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: space-around;
+}
+.valentine-popup .content .row-1 .title {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-family: "Dancing Script", cursive;
+  font-size: 4rem;
+  width: 70%;
+}
+.valentine-popup .content .row-1 .image {
+  width: 30%;
+  height: 100%;
+}
+.valentine-popup .content .row-2 {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: space-evenly;
+}
+.valentine-popup .content .row-2 .text {
+  width: 70%;
+  height: 100%;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  padding: 20px;
+}
+.valentine-popup .content .row-2 .signature {
+  width: 30%;
+  height: 100%;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: last baseline;
+  padding-bottom: 50px;
+}
+
+.photo-view {
+  -webkit-backdrop-filter: blur(100px);
+          backdrop-filter: blur(100px);
+  height: 100vh;
+  width: 100vw;
+  display: none;
+  position: fixed;
+  top: 0;
+  z-index: 9999;
+}
+.photo-view .topbar {
+  line-height: 4.5vh;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.photo-view .topbar .wrapwrap {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.photo-view .close {
+  height: 4.5vh;
+}
+.photo-view .content {
+  display: flex;
+  justify-content: center;
+  max-height: 90vh;
+}
+.photo-view .content img {
+  height: 100%;
+}/*# sourceMappingURL=style.css.map */
